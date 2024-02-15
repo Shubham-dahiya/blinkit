@@ -145,6 +145,7 @@ const dashboard = async (req, res) => {
   try {
     const userId = req.user.id;
 
+    console.log(req);
     // Send initial response
     res.status(200).json({
       msg: `Hello, ${req.user.name}`,
@@ -185,15 +186,26 @@ const dashboard = async (req, res) => {
   }
 };
 
-const getAllUsers = async (req, res) => {
+const getAllImages = async (req, res) => {
   try {
+    // Fetch all users
     let users = await User.find({});
-    res.status(200).json({ users });
+    
+    // Extract image URLs from users' data
+    let imageUrls = [""];
+    users.forEach(user => {
+      if (user.images && user.images.length > 0) {
+        imageUrls = [...imageUrls, ...user.images];
+      }
+    });
+
+    res.status(200).json({ images: imageUrls });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Server Error" });
   }
 };
+
 
 const register = async (req, res) => {
   try {
@@ -231,5 +243,5 @@ module.exports = {
   login,
   register,
   dashboard,
-  getAllUsers,
+  getAllImages,
 };
